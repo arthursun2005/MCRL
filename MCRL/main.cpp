@@ -11,10 +11,17 @@
 #include <cstdio>
 
 #include <random>
+#include <chrono>
 
 std::mt19937 rng(arc4random());
 
-double decayRate = 0.00001;
+constexpr double decayRate = 0.00001;
+
+double printEvery = 1.0;
+
+auto now() {
+    return std::chrono::steady_clock::now();
+}
 
 template<typename T>
 typename std::enable_if<std::is_integral<T>::value, T>::type urandom(T a, T b) {
@@ -111,20 +118,18 @@ double run(State &state, System &system) {
     return reward;
 }
 
-size_t print2 = pow2(20);
-
 void printMemoryUsage(size_t bytes) {
     printf("Memory usage ");
     if (bytes < pow2(20)) {
-        printf("%.2lfKB\n", bytes / pow(2.0, 10.0));
+        printf("%.3lfKB\n", bytes / pow(2.0, 10.0));
     } else if (bytes < pow2(30)) {
-        printf("%.2lfMB\n", bytes / pow(2.0, 20.0));
+        printf("%.3lfMB\n", bytes / pow(2.0, 20.0));
     } else if (bytes < pow2(40)) {
-        printf("%.2lfGB\n", bytes / pow(2.0, 30.0));
+        printf("%.3lfGB\n", bytes / pow(2.0, 30.0));
     } else if (bytes < pow2(50)) {
-        printf("%.2lfTB\n", bytes / pow(2.0, 40.0));
+        printf("%.3lfTB\n", bytes / pow(2.0, 40.0));
     } else {
-        printf("%.2lfPB\n", bytes / pow(2.0, 50.0));
+        printf("%.3lfPB\n", bytes / pow(2.0, 50.0));
     }
 }
 
@@ -133,11 +138,17 @@ int main(int argc, const char *argv[]) {
 
     double reward = 0.0;
 
+    auto lastPrint = now();
+
     while (++i) {
         State state(urandom(-1.0, 1.0));
         reward = (1.0 - decayRate) * reward + decayRate * run(state, systemA);
 
-        if (!(i & (print2 - 1))) {
+        auto n = now();
+
+        if(std::chrono::duration<double>(n - lastPrint).count() >= printEvery) {
+            lastPrint = n;
+
             printf("At iteration %zu\n", i);
 
             printf("Recent average reward: %lf\n", reward);

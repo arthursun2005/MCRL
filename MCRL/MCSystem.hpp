@@ -58,10 +58,6 @@ struct MCSystem {
 
     std::unordered_multiset<Node *, Hash, Equal> set;
 
-    MCSystem() noexcept {
-        set.reserve(pow2(24));
-    }
-
     ~MCSystem() {
         for (Node *node : set) {
             delete node;
