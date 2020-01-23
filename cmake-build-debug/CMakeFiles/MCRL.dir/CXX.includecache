@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/arthur/work/code/MCRL/MCRL/MCSystem.hpp
+cmath
+-
+stack
+-
+vector
+-
+unordered_set
+-
+
+/Users/arthur/work/code/MCRL/MCRL/main.cpp
+MCSystem.hpp
+/Users/arthur/work/code/MCRL/MCRL/MCSystem.hpp
+cstdio
+-
+random
+-
+
